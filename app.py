@@ -1,6 +1,8 @@
+import json
 import os
 
 from flask import Flask, send_from_directory, request
+from flask import jsonify
 from werkzeug.utils import secure_filename
 from logging.config import dictConfig
 
@@ -22,10 +24,15 @@ dictConfig({
 
 app = Flask(__name__, static_url_path='')
 
-
 app.config['ALLOWED_EXTENSIONS'] = ['jpg']
 app.config['UPLOAD_FOLDER'] = './uploads'
 
+
+label_dict = {}
+
+with open("labels.json", 'r') as label_file:
+    info = label_file.readline()
+    label_dict = json.loads(info)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -39,7 +46,14 @@ def upload_image():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return "ok"
+
+        key = "865c2ba"  # only for demonstration
+        if key in label_dict:
+            files = label_dict[key]
+            urls = ["train/" + f for f in files]
+            return jsonify(urls)
+        else:
+            return "no matched images"
     else:
         return "error: no file or file not allowed"
 
