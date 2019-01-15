@@ -293,6 +293,24 @@ def run(model_path, image_path, output):
         cv2.imwrite(output, pred * 255)
 
 
+def run_multiple(model_path, image_path, output_path):
+    pred_config = PredictConfig(
+        model=Model(),
+        session_init=get_model_loader(model_path),
+        input_names=['image'],
+        output_names=['output' + str(k) for k in range(1, 7)])
+    predictor = OfflinePredictor(pred_config)
+    files = os.listdir(image_path)
+    for f in files:
+        im = cv2.imread(os.path.join(image_path, f))
+        assert im is not None
+        im = cv2.resize(im, (im.shape[1] // 16 * 16, im.shape[0] // 16 * 16))[None, :, :, :].astype('float32')
+        outputs = predictor(im)
+        if output_path is not None:
+            pred = outputs[5][0]
+            cv2.imwrite(os.path.join(output_path, f), pred * 255)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', help='comma separated list of GPU(s) to use.')
@@ -307,7 +325,8 @@ if __name__ == '__main__':
     if args.view:
         view_data()
     elif args.run:
-        run(args.load, args.run, args.output)
+        # run(args.load, args.run, args.output)
+        run_multiple(args.load, args.run, args.output)
     else:
         config = get_config()
         if args.load:
