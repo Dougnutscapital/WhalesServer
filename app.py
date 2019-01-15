@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, send_from_directory, request, redirect
+from flask import Flask, send_from_directory, request
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_url_path='')
@@ -22,6 +22,13 @@ def upload_image():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return "ok"
+    else:
+        return "error: no file or file not allowed"
+
+
+@app.route('/upload_bitmap', methods=['POST'])
+def upload_bitmap():
+    return "todo"  # TODO
 
 
 @app.route('/')
