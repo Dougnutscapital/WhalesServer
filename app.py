@@ -56,7 +56,7 @@ def upload_image():
 @app.route('/query/<path:path>', methods=['GET'])
 def query_image(path):
     # TODO: query image
-    if os.path.isfile(os.path.join("uploads")):
+    if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], "uploads")):
         open_file = open(path, 'r')
         # TODO: query
         key = "865c2ba"  # only for demonstration
