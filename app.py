@@ -7,6 +7,8 @@ from flask import jsonify
 from werkzeug.utils import secure_filename
 from logging.config import dictConfig
 
+from classify import predict
+
 dictConfig({
     'version': 1,
     'formatters': {'default': {
@@ -31,7 +33,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join('', 'uploads')
 
 label_dict = {}
 
-with open("labels.json", 'r') as label_file:
+with open("metadata/labels.json", 'r') as label_file:
     info = label_file.readline()
     label_dict = json.loads(info)
 
@@ -58,18 +60,19 @@ def query_image(path):
     # TODO: query image
     path = os.path.join(app.config['UPLOAD_FOLDER'], path)
     if os.path.isfile(path):
-        # # TODO: query
+        # TODO: query
         # key = "865c2ba"  # only for demonstration
-        # if key in label_dict:
-        #     files = label_dict[key]
-        #     urls = ["train/" + f for f in files]
-        #     return jsonify(urls)
-        # else:
-        #     return "no matched images"
+        key = predict(path)
+        if key in label_dict:
+            files = label_dict[key]
+            urls = ["train/" + f for f in files]
+            return jsonify(urls)
+        else:
+            return "no matched images"
         # TODO: delete, for frontend test
-        print(path)
-        urls = [path,path,path,path]
-        return jsonify(urls)
+        # print(path)
+        # urls = [path,path,path,path]
+        # return jsonify(urls)
     else:
         return "file invalid"
 

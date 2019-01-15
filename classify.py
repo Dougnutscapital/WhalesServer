@@ -1,20 +1,21 @@
 import numpy as np
 import pandas as pd
-import os
-import matplotlib.pyplot as plt
-import matplotlib.image as mplimg
-from matplotlib.pyplot import imshow
+from keras.applications.imagenet_utils import preprocess_input
+from keras.metrics import top_k_categorical_accuracy
+from keras.models import load_model
+from keras.preprocessing import image
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-from keras import layers
-from keras.preprocessing import image
-from keras.applications.imagenet_utils import preprocess_input
-from keras.layers import Input, Dense, Activation, BatchNormalization, Flatten, Conv2D
-from keras.layers import AveragePooling2D, MaxPooling2D, Dropout, GlobalAveragePooling2D
-from keras.models import load_model
-from keras.metrics import categorical_accuracy, top_k_categorical_accuracy, categorical_crossentropy
 
 img_size = 224
+df_train = pd.read_csv('metadata/train.csv')
+
+
+def top_5_accuracy(y_true, y_pred):
+    return top_k_categorical_accuracy(y_true, y_pred, k=5)
+
+
+model = load_model('trained_models/first_model.h5', custom_objects={'top_5_accuracy': top_5_accuracy})
 
 
 def prepareImages(data, m, dataset):
@@ -45,24 +46,8 @@ def load_img(img_name):
     X = preprocess_input(X)
     return X
 
-def top_5_accuracy(y_true, y_pred):
-    return top_k_categorical_accuracy(y_true, y_pred, k=5)
-
-
-model = load_model('trained_models/first_model.h5', custom_objects={'top_5_accuracy': top_5_accuracy})
-
-
-print(model.summary())
-result = model.predict(load_img(img_1).reshape(1,224,224,3))
-
-print(result.shape)
-
-df_train = pd.read_csv('train.csv')
-df_train = df_train.head(5000)
-print(df_train.head())
 
 def prepare_labels(y):
-    y = df_train['Id']
     values = np.array(y)
     label_encoder = LabelEncoder()
     integer_encoded = label_encoder.fit_transform(values)
@@ -80,12 +65,8 @@ def prepare_labels(y):
 
 y, label_encoder, one_encoder = prepare_labels(df_train['Id'])
 
-result_1 = one_encoder.inverse_transform(result)
 
-result_2 = label_encoder.inverse_transform(result_1)
-
-
-print(result_2)
-
-
-
+def predict(filename):
+    result = model.predict(load_img(filename).reshape(1, 224, 224, 3))  # todo: resize image?
+    result_1 = one_encoder.inverse_transform(result).astype(int)        # todo: incorrect # of classes, need retrain
+    return label_encoder.inverse_transform(result_1)
