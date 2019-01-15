@@ -10,28 +10,40 @@
 <body>
     <div class="container">
         <!--UPLOAD-->
-        <form id="upload-file-form" enctype="multipart/form-data">
-            <h3>Upload images</h3>
-            <div class="dropbox">
-                <input id="file" name="file" type="file" accept="image/*" class="input-file">
-                <div>
-                    <img id="image-holder" width="200" height="200">
-                    <input id="query-button" type="button" value="Query">
-                    <div id="similar-image" style="margin-top: 20px"></div>
+        <div class="page-header">
+            <h1>Upload images</h1>
+        </div>
+        <div class="form-group">
+            <input id="file" name="file" type="file" accept="image/*">
+        </div>
+        <div id="upload-group" class="row">
+            <div class="col-xs-6 col-md-3 query">
+                <a class="thumbnail">
+                    <img id="image-holder" data-src="holder.js/400x300?auto=yes&text=Choose File">
+                </a>
+                <div class="caption">
+                    <a id="query-button" class="btn btn-primary btn-block" role="button" disabled>Query</a>
                 </div>
             </div>
-        </form>
-
+        </div>
         <!--DRAW-->
-        <form id="draw">
-            <h3>Draw images</h3>
-            <div>
-
+        <div class="page-header">
+            <h1>Draw images</h1>
+        </div>
+        <div id="draw-group" class="row">
+            <div class="col-xs-6 col-md-3 query">
+                <a class="thumbnail">
+                    <img id="draw-holder" data-src="holder.js/400x300?auto=yes&text=Draw Image">
+                </a>
+                <div class="caption">
+                    <a id="draw-button" class="btn btn-primary btn-block" role="button" disabled>Query</a>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/holder.min.js"></script>
     <script type="text/javascript" src="/js/script.js"></script>
 </body>
 </html>

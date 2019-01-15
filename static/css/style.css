@@ -1,13 +1,5 @@
-h3 {
-    margin-top: 50px;
-}
-
-.input-file {
-    margin: 10px;
-}
-
-#similar-image img {
-    height: 200px;
-    width: 200px;
-    margin: 10px;
+.caption.caption-result {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 16px;
 }

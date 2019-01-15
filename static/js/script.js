@@ -1,8 +1,6 @@
 $(document).ready(function() {
-    $('#image-holder').hide();
-    $('#query-button').hide();
-    $('#similar-image').hide();
     $('#file').on('change', handleUpload);
+    $('#query-button').on('click', handleQuery);
 });
 
 function handleUpload() {
@@ -14,12 +12,10 @@ function handleUpload() {
         type: 'POST',
         data: formData,
         success: function (data) {
-            //alert(data);
             var image = $('#image-holder');
             image.attr('src', data);
-            image.show();
-            var queryButton = $('#query-button');
-            queryButton.show();
+            $('#upload-group').show();
+            $('#query-button').prop('disabled', false);
         },
         cache: false,
         contentType: false,
@@ -27,21 +23,29 @@ function handleUpload() {
     });
 }
 
-$( "#query-button" ).click(function () {
+function handleQuery() {
     var filename = $('#image-holder').attr("src").substr(8);
     $.ajax({
         url: '/query/' + filename,
         type: 'GET',
         success: function (data) {
             console.log(data);
-            var images = $('#similar-image')
+            var images = $('#upload-group');
+            images.children('div.result').remove();
             for (i = 0; i < Math.min(data.length, 3); i++) {
-                var path = data[i]
-                var id = "img" + i
-                var image = '<img id=' + id + ' src=' + path + ' />'
+                var path = data[i];
+                var id = "upload-result-" + i;
+                var image = '<div class="col-xs-6 col-md-3 result">' +
+                            '  <a href="' + path + '" class="thumbnail">' +
+                            '    <img id="' + id + '" src="' + path + '">' +
+                            '  </a>' +
+                            '  <div class="caption caption-result">' +
+                            '    <span class="label label-success">Result #' + (i+1) + '</span>' +
+                            '  </div>' +
+                            '</div>';
                 images.append(image)
             }
-            images.show()
+            images.show();
         }
     });
-})
+}
