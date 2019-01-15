@@ -53,11 +53,11 @@ def upload_image():
         return "error: no file or file not allowed"
 
 
-@app.route('/query/<filename:filename>', methods=['GET'])
-def query_image(filename):
+@app.route('/query/<path:path>', methods=['GET'])
+def query_image(path):
     # TODO: query image
     if os.path.isfile(os.path.join("uploads")):
-        open_file = open(filename, 'r')
+        open_file = open(path, 'r')
         # TODO: query
         key = "865c2ba"  # only for demonstration
         if key in label_dict:
