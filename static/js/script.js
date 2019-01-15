@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $('#image-holder').hide();
     $('#file').on('change', handleUpload);
 });
 
@@ -11,7 +12,10 @@ function handleUpload() {
         type: 'POST',
         data: formData,
         success: function (data) {
-            alert(data);
+            //alert(data);
+            var image = $('#image-holder');
+            image.attr('src', data);
+            image.show();
         },
         cache: false,
         contentType: false,

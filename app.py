@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 from flask import Flask, send_from_directory, request
 from flask import jsonify
@@ -25,7 +26,7 @@ dictConfig({
 app = Flask(__name__, static_url_path='')
 
 app.config['ALLOWED_EXTENSIONS'] = ['jpg']
-app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join('', 'uploads')
 
 
 label_dict = {}
@@ -60,7 +61,7 @@ def upload_image():
 
 @app.route('/upload_bitmap', methods=['POST'])
 def upload_bitmap():
-    return "todo"  # TODO
+    return "todo"
 
 @app.route('/')
 def send_index():
