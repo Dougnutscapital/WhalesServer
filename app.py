@@ -1,4 +1,5 @@
 import os
+import time
 
 from flask import Flask, send_from_directory, request, redirect
 from werkzeug.utils import secure_filename
@@ -24,7 +25,7 @@ app = Flask(__name__, static_url_path='')
 
 
 app.config['ALLOWED_EXTENSIONS'] = ['jpg']
-app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join('', 'uploads')
 
 
 def allowed_file(filename):
@@ -37,9 +38,10 @@ def upload_image():
     file = request.files['file']
     app.logger.info('Filename: %s', file.filename)
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return "ok"
+        filename = str(round(time.time())) + secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        return filepath
 
 @app.route('/')
 def send_index():
