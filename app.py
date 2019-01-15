@@ -45,9 +45,20 @@ def upload_image():
     file = request.files['file']
     app.logger.info('Filename: %s', file.filename)
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = str(round(time.time())) + secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        return file_path
+    else:
+        return "error: no file or file not allowed"
 
+
+@app.route('/query/<filename:filename>', methods=['GET'])
+def query_image(filename):
+    # TODO: query image
+    if os.path.isfile(os.path.join("uploads")):
+        open_file = open(filename, 'r')
+        # TODO: query
         key = "865c2ba"  # only for demonstration
         if key in label_dict:
             files = label_dict[key]
@@ -56,8 +67,7 @@ def upload_image():
         else:
             return "no matched images"
     else:
-        return "error: no file or file not allowed"
-
+        return "file invalid"
 
 @app.route('/upload_bitmap', methods=['POST'])
 def upload_bitmap():
