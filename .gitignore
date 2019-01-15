@@ -31,6 +31,8 @@ MANIFEST
 *.manifest
 *.spec
 
+node_modules/
+package-lock.json
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

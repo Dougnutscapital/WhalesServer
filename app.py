@@ -56,16 +56,20 @@ def upload_image():
 @app.route('/query/<path:path>', methods=['GET'])
 def query_image(path):
     # TODO: query image
-    if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], "uploads")):
-        open_file = open(path, 'r')
-        # TODO: query
-        key = "865c2ba"  # only for demonstration
-        if key in label_dict:
-            files = label_dict[key]
-            urls = ["train/" + f for f in files]
-            return jsonify(urls)
-        else:
-            return "no matched images"
+    path = os.path.join(app.config['UPLOAD_FOLDER'], path)
+    if os.path.isfile(path):
+        # # TODO: query
+        # key = "865c2ba"  # only for demonstration
+        # if key in label_dict:
+        #     files = label_dict[key]
+        #     urls = ["train/" + f for f in files]
+        #     return jsonify(urls)
+        # else:
+        #     return "no matched images"
+        # TODO: delete, for frontend test
+        print(path)
+        urls = [path,path,path,path]
+        return jsonify(urls)
     else:
         return "file invalid"
 

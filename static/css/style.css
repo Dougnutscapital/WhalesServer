@@ -5,3 +5,9 @@ h3 {
 .input-file {
     margin: 10px;
 }
+
+#similar-image img {
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+}

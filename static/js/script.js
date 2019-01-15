@@ -30,13 +30,18 @@ function handleUpload() {
 $( "#query-button" ).click(function () {
     var filename = $('#image-holder').attr("src").substr(8);
     $.ajax({
-        url: '/query',
+        url: '/query/' + filename,
         type: 'GET',
         success: function (data) {
-            alert(data);
-            var image = $('#similar-image');
-            image.attr('src', data);
-            image.show();
+            console.log(data);
+            var images = $('#similar-image')
+            for (i = 0; i < Math.min(data.length, 3); i++) {
+                var path = data[i]
+                var id = "img" + i
+                var image = '<img id=' + id + ' src=' + path + ' />'
+                images.append(image)
+            }
+            images.show()
         }
     });
 })
