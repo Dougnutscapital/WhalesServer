@@ -1,0 +1,1 @@
+trained_models/HED_pretrained_bsds.npz filter=lfs diff=lfs merge=lfs -text

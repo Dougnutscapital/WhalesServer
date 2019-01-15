@@ -106,5 +106,7 @@ venv.bak/
 .mypy_cache/
 
 .idea
+!uploads/.gitkeep
 uploads/*
-static/train
+static/train/
+.DS_Store
