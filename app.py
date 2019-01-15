@@ -2,22 +2,40 @@ import os
 
 from flask import Flask, send_from_directory, request
 from werkzeug.utils import secure_filename
+from logging.config import dictConfig
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__, static_url_path='')
 
 
-ALLOWED_EXTENSIONS = ['jpg']
-UPLOAD_FOLDER = '/uploads'
+app.config['ALLOWED_EXTENSIONS'] = ['jpg']
+app.config['UPLOAD_FOLDER'] = './uploads'
 
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     file = request.files['file']
+    app.logger.info('Filename: %s', file.filename)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -30,11 +48,13 @@ def upload_image():
 def upload_bitmap():
     return "todo"  # TODO
 
-
 @app.route('/')
 def send_index():
     return send_from_directory('static', "index.html")
 
+@app.route('/uploads/<path:path>')
+def send_uploads(path):
+    return send_from_directory('uploads', path)
 
 @app.route('/<path:path>')
 def send_static(path):
