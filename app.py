@@ -72,8 +72,9 @@ def query_image(path):
         # TODO: query
         # key = "865c2ba"  # only for demonstration
         key = predict(path)
-        if key in label_dict:
-            files = label_dict[key]
+        if key[0] in label_dict:
+            k = key[0]
+            files = label_dict[k]
             urls = ["train/" + f for f in files]
             return jsonify(urls)
         else:

@@ -25,7 +25,7 @@ function handleUpload() {
             var image = $('#image-holder');
             image.attr('src', data);
             $('#upload-group').show();
-            $('#query-button').prop('disabled', false);
+           //  $('#query-button').prop('disabled', false);
         },
         cache: false,
         contentType: false,
