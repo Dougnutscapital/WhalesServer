@@ -101,6 +101,24 @@ def randomNoise(im):
     return random_noise(im, var=var)
 
 
+def randomRotate(im):
+    '''
+    random rotate angle
+    '''
+    angle = randRange(-10, 10)
+    rows = im.shape[0]
+    cols = im.shape[1]
+
+    img_center = (cols / 2, rows / 2)
+    M = cv2.getRotationMatrix2D(img_center, angle, 1)
+
+    avg_color = np.average(np.average(im, axis=0), axis=0)
+    rotated_image = cv2.warpAffine(im, M, (cols, rows), borderValue=avg_color)
+    cv2.imshow("Rotate Image", rotated_image)
+    cv2.waitKey(0)
+    return rotated_image
+
+
 def augment(im, steps):
     '''
     image augmentation by doing a sereis of transfomations on the image.
