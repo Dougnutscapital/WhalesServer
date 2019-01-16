@@ -71,4 +71,6 @@ def predict(filename):
     result_1 = one_encoder.inverse_transform(result).astype(int)        # todo: incorrect # of classes, need retrain
     return label_encoder.inverse_transform(result_1)
 
-print(predict("static/train/0001f9222.jpg"))
+model._make_predict_function()
+
+# print(predict("static/train/0001f9222.jpg"))
