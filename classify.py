@@ -15,7 +15,7 @@ def top_5_accuracy(y_true, y_pred):
     return top_k_categorical_accuracy(y_true, y_pred, k=5)
 
 
-model = load_model('trained_models/first_model.h5', custom_objects={'top_5_accuracy': top_5_accuracy})
+model = load_model('trained_models/toy_model_1.h5', custom_objects={'top_5_accuracy': top_5_accuracy})
 
 
 def prepareImages(data, m, dataset):
