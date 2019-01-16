@@ -121,7 +121,7 @@ def generate_sample(source_file, dst_file, pipeline):
     pl.imsave(dst_file, arr=res_im)
 
 
-def sample_generate(category, original_df, num_samples = 100):
+def sample_generate(category, original_df, num_samples = 2):
     df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
     original_df_filtered = original_df[original_df["Id"] == category]
     for _ in range(0, num_samples):
@@ -137,7 +137,9 @@ def sample_generate(category, original_df, num_samples = 100):
         # pipeline = pipeline[:num_policies]
         pipeline = generation_policies
         generate_sample(sample_file_path, sample_dst_file_path, pipeline)
-        df.append([[sample_dst, sample, category]], ignore_index=True)
+        elements = {'Image': sample_dst, "SrcImage": sample, "Id": category}
+        print(elements)
+        df.append(elements, ignore_index=True)
     return df
 
 
