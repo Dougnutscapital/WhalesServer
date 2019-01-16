@@ -111,5 +111,6 @@ uploads/*
 static/train/
 .DS_Store
 intermediate/
-sketches/
+sketches/*
+!sketches/.gitkeep
 generated_train/

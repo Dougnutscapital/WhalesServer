@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from logging.config import dictConfig
 
 from classify import predict
+from sketch_classify import predict_from_sketch
 
 dictConfig({
     'version': 1,
@@ -56,8 +57,9 @@ def upload_image():
     else:
         return "error: no file or file not allowed"
 
+
 @app.route('/try', methods=['POST'])
-def tryBase():
+def query_sketch():
     file = request.form['image']
     file = file[str(file).index(',')+1:]
     if file:
@@ -66,10 +68,17 @@ def tryBase():
         with open(file_path, "wb") as fh:
             fh.write(base64.decodebytes(str.encode(file)))
 
-        # todo: file_path should be the input of the prediction model
-        return "ok"
+        key = predict_from_sketch(file_path)[0]
+        if key.startswith("w_"):
+            key = key[2:]
+        if key in label_dict:
+            files = label_dict[key]
+            urls = ["train/" + f for f in files]
+            return jsonify(urls)
+        else:
+            return "error: no match"
     else:
-        return "error: no file or file not allowed"
+        return "error: no file uploaded"
 
 
 @app.route('/query/<path:path>', methods=['GET'])
@@ -95,17 +104,16 @@ def query_image(path):
     else:
         return "file invalid"
 
-@app.route('/upload_bitmap', methods=['POST'])
-def upload_bitmap():
-    return "todo"
 
 @app.route('/')
 def send_index():
     return send_from_directory('static', "index.html")
 
+
 @app.route('/uploads/<path:path>')
 def send_uploads(path):
     return send_from_directory('uploads', path)
+
 
 @app.route('/<path:path>')
 def send_static(path):
