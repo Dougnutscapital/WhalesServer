@@ -308,10 +308,12 @@ def run_multiple(model_path, image_path, output_path):
         outputs = predictor(im)
         if output_path is not None:
             pred = outputs[5][0]
-            img_out = pred * 255
-            img_out = cv2.bitwise_not(img_out)
+            img_out = pred
+            img_out *= (255.0 / img_out.max())
+            img_out = 255 - img_out
+            img_resized = cv2.resize(img_out, (224, 224))
             # todo: pre-processing pipeline: reverse and remove noise
-            cv2.imwrite(os.path.join(output_path, f), img_out)
+            cv2.imwrite(os.path.join(output_path, f), img_resized)
 
 
 if __name__ == '__main__':
