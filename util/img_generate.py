@@ -121,8 +121,11 @@ def generate_sample(source_file, dst_file, pipeline):
     pl.imsave(dst_file, arr=res_im)
 
 
-def sample_generate(category, original_df, num_samples = 100):
-    df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
+df_columns = ["Image", "SrcImage", "Id"]
+
+
+def sample_generate(category, original_df, num_samples = 30):
+    df = pd.DataFrame(columns=df_columns)
     original_df_filtered = original_df[original_df["Id"] == category]
     for _ in range(0, num_samples):
         sample = original_df_filtered.sample(1).iloc[0]["Image"]
@@ -137,7 +140,9 @@ def sample_generate(category, original_df, num_samples = 100):
         # pipeline = pipeline[:num_policies]
         pipeline = generation_policies
         generate_sample(sample_file_path, sample_dst_file_path, pipeline)
-        df.append([[sample_dst, sample, category]], ignore_index=True)
+        elem = pd.DataFrame([[sample_dst, sample, category]], columns=df_columns)
+        print(sample_dst, sample, category)
+        df = pd.concat([df, elem], ignore_index=True)
     return df
 
 
@@ -145,7 +150,7 @@ def main():
     df_train = pd.read_csv('../metadata/train.csv')
     df_sorted = df_train.groupby(['Id']).agg('count').sort_values("Image", ascending=False)
     print(df_sorted)
-    result_df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
+    result_df = pd.DataFrame(columns=df_columns)
     for idx in df_sorted.index:
         df = sample_generate(idx, df_train)
         result_df.append(df)
