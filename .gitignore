@@ -111,3 +111,4 @@ uploads/*
 static/train/
 .DS_Store
 intermediate/
+sketches/

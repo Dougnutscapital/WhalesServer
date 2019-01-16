@@ -30,13 +30,14 @@ app = Flask(__name__, static_url_path='')
 
 app.config['ALLOWED_EXTENSIONS'] = ['jpg']
 app.config['UPLOAD_FOLDER'] = os.path.join('', 'uploads')
-
+app.config['SKETCH_FOLDER'] = os.path.join('', 'sketches')
 
 label_dict = {}
 
 with open("metadata/labels.json", 'r') as label_file:
     info = label_file.readline()
     label_dict = json.loads(info)
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -59,10 +60,17 @@ def upload_image():
 def tryBase():
     file = request.form['image']
     file = file[str(file).index(',')+1:]
-    print(file)
-    with open("image.jpg", "wb") as fh:
-        fh.write(base64.decodebytes(str.encode(file)))
-    return "ok"
+    if file:
+        filename = str(round(time.time())) + ".jpg"
+        file_path = os.path.join(app.config['SKETCH_FOLDER'], filename)
+        with open(file_path, "wb") as fh:
+            fh.write(base64.decodebytes(str.encode(file)))
+
+        # todo: file_path should be the input of the prediction model
+        return "ok"
+    else:
+        return "error: no file or file not allowed"
+
 
 @app.route('/query/<path:path>', methods=['GET'])
 def query_image(path):
