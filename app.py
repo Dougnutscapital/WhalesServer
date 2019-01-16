@@ -58,7 +58,7 @@ def upload_image():
         return "error: no file or file not allowed"
 
 
-@app.route('/try', methods=['POST'])
+@app.route('/draw', methods=['POST'])
 def query_sketch():
     file = request.form['image']
     file = file[str(file).index(',')+1:]

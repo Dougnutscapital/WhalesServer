@@ -58,11 +58,27 @@ function handleDraw() {
     formData.append('image', dataUrl);
 
     $.ajax({
-        url: '/try',
+        url: '/draw',
         type: 'POST',
         data: formData,
         success: function (data) {
             console.log(data);
+            var images = $('#draw-group');
+            images.children('div.result').remove();
+            for (i = 0; i < Math.min(data.length, 3); i++) {
+                var path = data[i];
+                var id = "draw-result-" + i;
+                var image = '<div class="col-xs-6 col-md-3 result">' +
+                            '  <a href="' + path + '" class="thumbnail">' +
+                            '    <img id="' + id + '" src="' + path + '">' +
+                            '  </a>' +
+                            '  <div class="caption caption-result">' +
+                            '    <span class="label label-success">Result #' + (i+1) + '</span>' +
+                            '  </div>' +
+                            '</div>';
+                images.append(image)
+            }
+            images.show();
         },
         cache: false,
         contentType: false,
