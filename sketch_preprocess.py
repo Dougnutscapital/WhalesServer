@@ -308,7 +308,10 @@ def run_multiple(model_path, image_path, output_path):
         outputs = predictor(im)
         if output_path is not None:
             pred = outputs[5][0]
-            cv2.imwrite(os.path.join(output_path, f), pred * 255)
+            img_out = pred * 255
+            img_out = cv2.bitwise_not(img_out)
+            # todo: pre-processing pipeline: reverse and remove noise
+            cv2.imwrite(os.path.join(output_path, f), img_out)
 
 
 if __name__ == '__main__':

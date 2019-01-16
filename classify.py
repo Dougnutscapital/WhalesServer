@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 img_size = 224
-df_train = pd.read_csv('metadata/train.csv')
+df_train = pd.read_csv('metadata/train.csv').head(5000)
 
 
 def top_5_accuracy(y_true, y_pred):
@@ -67,6 +67,8 @@ y, label_encoder, one_encoder = prepare_labels(df_train['Id'])
 
 
 def predict(filename):
-    result = model.predict(load_img(filename).reshape(1, 224, 224, 3))  # todo: resize image?
+    result = model.predict(load_img(filename).reshape(1, 224, 224, 3))
     result_1 = one_encoder.inverse_transform(result).astype(int)        # todo: incorrect # of classes, need retrain
     return label_encoder.inverse_transform(result_1)
+
+print(predict("static/train/0001f9222.jpg"))
