@@ -1,6 +1,7 @@
 import json
 import os
 import time
+import base64
 
 from flask import Flask, send_from_directory, request
 from flask import jsonify
@@ -54,6 +55,14 @@ def upload_image():
     else:
         return "error: no file or file not allowed"
 
+@app.route('/try', methods=['POST'])
+def tryBase():
+    file = request.form['image']
+    file = file[str(file).index(',')+1:]
+    print(file)
+    with open("image.jpg", "wb") as fh:
+        fh.write(base64.decodebytes(str.encode(file)))
+    return "ok"
 
 @app.route('/query/<path:path>', methods=['GET'])
 def query_image(path):
