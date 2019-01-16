@@ -3,12 +3,12 @@ from skimage.exposure import equalize_adapthist, equalize_hist, rescale_intensit
     adjust_sigmoid
 from skimage.filters import gaussian
 from skimage.util import random_noise
-import random
+from util.photo_crop import crop_photo
 import pylab as pl
 import pandas as pd
-import numpy as np
 import os
-import cv2
+import uuid
+import random
 
 def randRange(a, b):
     '''
@@ -47,16 +47,8 @@ def randomPerspective(im):
     return warp(im, pt, output_shape=im.shape[:2])
 
 
-def randomCrop(im):
-    '''
-    croping the image in the center from a random margin from the borders
-    '''
-    margin = 1 / 10
-    start = [int(randRange(0, im.shape[0] * margin)),
-             int(randRange(0, im.shape[1] * margin))]
-    end = [int(randRange(im.shape[0] * (1 - margin), im.shape[0])),
-           int(randRange(im.shape[1] * (1 - margin), im.shape[1]))]
-    return im[start[0]:end[0], start[1]:end[1]]
+def deep_crop(im):
+    return crop_photo(im)
 
 
 def randomIntensity(im):
@@ -101,21 +93,47 @@ def randomNoise(im):
     return random_noise(im, var=var)
 
 
-def augment(im, steps):
-    '''
-    image augmentation by doing a sereis of transfomations on the image.
-    '''
-    for step in steps:
-        im = step(im)
-    return im
+generation_policies = [randomNoise]  # randomNoise
 
+
+def generate_sample(source_file, dst_file, pipeline):
+    im = deep_crop(source_file)
+    print(im.shape)
+    for item in pipeline:
+        im = item(im)
+    pl.imsave(dst_file, arr=im)
+
+
+def sample_generate(category, original_df, num_samples = 10):
+    df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
+    original_df_filtered = original_df[original_df["Id"] == category]
+    for _ in range(0, num_samples):
+        sample = original_df_filtered.sample(1).iloc[0]["Image"]
+        sample_dst = sample[:-4] + '-' + str(uuid.uuid4()) + ".jpg"
+        sample_file_path = os.path.join("../static/train", sample)
+        sample_dst_file_path = os.path.join("../generated_train", sample_dst)
+
+        # generate pipeline
+        # num_policies = random.randint(1, len(generation_policies))
+        # pipeline = generation_policies.copy()
+        # random.shuffle(pipeline)
+        # pipeline = pipeline[:num_policies]
+        pipeline = generation_policies
+        generate_sample(sample_file_path, sample_dst_file_path, pipeline)
+        df.append([[sample_dst, sample, category]], ignore_index=True)
+    return df
 
 
 def main():
     df_train = pd.read_csv('../metadata/train.csv')
     df_sorted = df_train.groupby(['Id']).agg('count').sort_values("Image", ascending=False)
     print(df_sorted)
+    result_df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
+    for idx in df_sorted.index:
+        df = sample_generate(idx, df_train)
+        result_df.append(df)
 
+    result_df.to_csv("generated_df.csv")
 
 if __name__ == '__main__':
     main()
