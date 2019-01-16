@@ -7,6 +7,8 @@ from util.photo_crop import crop_photo
 import pylab as pl
 import pandas as pd
 import os
+import cv2
+import numpy as np
 import uuid
 import random
 
@@ -92,19 +94,34 @@ def randomNoise(im):
     var = randRange(0.001, 0.01)
     return random_noise(im, var=var)
 
+def randomRotate(im):
+    '''
+    random rotate angle
+    '''
+    angle = randRange(-10, 10)
+    rows = im.shape[0]
+    cols = im.shape[1]
 
-generation_policies = [randomNoise]  # randomNoise
+    img_center = (cols / 2, rows / 2)
+    M = cv2.getRotationMatrix2D(img_center, angle, 1)
+
+    avg_color = np.average(np.average(im, axis=0), axis=0)
+    rotated_image = cv2.warpAffine(im, M, (cols, rows), borderValue=avg_color)
+    return rotated_image
+
+
+generation_policies = [randomRotate, deep_crop]  # randomNoise
 
 
 def generate_sample(source_file, dst_file, pipeline):
-    im = deep_crop(source_file)
-    print(im.shape)
+    im = cv2.imread(source_file, 0)
     for item in pipeline:
         im = item(im)
-    pl.imsave(dst_file, arr=im)
+    res_im = cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)
+    pl.imsave(dst_file, arr=res_im)
 
 
-def sample_generate(category, original_df, num_samples = 10):
+def sample_generate(category, original_df, num_samples = 100):
     df = pd.DataFrame(columns=["Image", "SrcImage", "Id"])
     original_df_filtered = original_df[original_df["Id"] == category]
     for _ in range(0, num_samples):
@@ -134,6 +151,7 @@ def main():
         result_df.append(df)
 
     result_df.to_csv("generated_df.csv")
+
 
 if __name__ == '__main__':
     main()

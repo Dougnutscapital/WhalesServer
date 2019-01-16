@@ -5,8 +5,7 @@ import numpy as np
 model = load_model("../trained_models/cropping.model")
 
 
-def crop_photo(im_in):
-    im = cv.imread(im_in, cv.IMREAD_GRAYSCALE)
+def crop_photo(im):
     resized = cv.resize(im, (128, 128))
     expanded_1 = np.expand_dims(resized, axis=3)
     expanded_2 = np.expand_dims(expanded_1, axis=0)
@@ -24,11 +23,9 @@ def crop_photo(im_in):
 
     res = res.astype(int)
 
-    im_crop = cv.imread(im_in)
-
     if res[2] - res[0] <= 1 or res[3] - res[1] <= 1:
         # failed to crop, return original image
-        return im_crop
+        return im
 
-    return im_crop[res[1]:res[3], res[0]:res[2]]
+    return im[res[1]:res[3], res[0]:res[2]]
 

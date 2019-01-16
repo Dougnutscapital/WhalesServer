@@ -112,3 +112,4 @@ static/train/
 .DS_Store
 intermediate/
 sketches/
+generated_train/
