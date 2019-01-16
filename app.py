@@ -71,10 +71,11 @@ def query_image(path):
     if os.path.isfile(path):
         # TODO: query
         # key = "865c2ba"  # only for demonstration
-        key = predict(path)
-        if key[0] in label_dict:
-            k = key[0]
-            files = label_dict[k]
+        key = predict(path)[0]
+        if key.startswith("w_"):
+            key = key[2:]
+        if key in label_dict:
+            files = label_dict[key]
             urls = ["train/" + f for f in files]
             return jsonify(urls)
         else:

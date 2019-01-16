@@ -8,8 +8,15 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 img_size = 224
-df_train = pd.read_csv('metadata/train.csv').head(5000)
-
+df_train = pd.read_csv('metadata/train.csv')
+df = df_train
+grouped = df.groupby('Id')
+df['occurrences'] =  grouped.Id.transform('count')
+toy_df = df[(df.occurrences >= 10) & (df.Id != 'new_whale')]
+# randomly pick 10 images for each label (without replacement)
+random_pick_10 = lambda x: x.sample(10)
+toy_df = toy_df.groupby('Id',group_keys=True).apply(random_pick_10)
+df_train=toy_df
 
 def top_5_accuracy(y_true, y_pred):
     return top_k_categorical_accuracy(y_true, y_pred, k=5)
@@ -73,3 +80,4 @@ def predict(filename):
 
 
 model._make_predict_function()
+# print(predict("static/train/0a0c1df99.jpg"))
