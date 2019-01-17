@@ -3,7 +3,7 @@ from skimage.exposure import equalize_adapthist, equalize_hist, rescale_intensit
     adjust_sigmoid
 from skimage.filters import gaussian
 from skimage.util import random_noise
-from util.photo_crop import crop_photo
+from photo_crop import crop_photo
 import pylab as pl
 import pandas as pd
 import os
