@@ -2,6 +2,7 @@ import json
 import os
 import time
 import base64
+import random
 
 from flask import Flask, send_from_directory, request
 from flask import jsonify
@@ -74,6 +75,7 @@ def query_sketch():
         if key in label_dict:
             files = label_dict[key]
             urls = ["train/" + f for f in files]
+            random.shuffle(urls)
             return jsonify(urls)
         else:
             return "error: no match"
@@ -94,6 +96,7 @@ def query_image(path):
         if key in label_dict:
             files = label_dict[key]
             urls = ["train/" + f for f in files]
+            random.shuffle(urls)
             return jsonify(urls)
         else:
             return "no matched images"
