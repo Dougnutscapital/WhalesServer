@@ -2,6 +2,7 @@ $(document).ready(function() {
     $('#file').on('change', handleUpload);
     $('#query-button').on('click', handleQuery);
     $('#draw-button').on('click', handleDraw);
+    $('#clear-button').on('click', handleClear);
 });
 
 function handleUpload() {
@@ -84,4 +85,8 @@ function handleDraw() {
         contentType: false,
         processData: false
     });
+}
+
+function handleClear() {
+    project.activeLayer.removeChildren();
 }

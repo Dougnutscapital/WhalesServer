@@ -3,12 +3,6 @@ paper.install(window);
 // links below can access them.
 var tool1;
 
-// var canvas = document.getElementById("canvas"),
-//     ctx = canvas.getContext("2d");
-//
-// window.src = new Image();
-// background.src = "http://i.imgur.com/yf6d9SX.jpg";
-
 window.onload = function() {
     paper.setup('myCanvas');
 
@@ -21,6 +15,7 @@ window.onload = function() {
     function onMouseDown(event) {
       path = new Path();
       path.strokeColor = 'black';
+      path.strokeWidth = 4;
       path.add(event.point);
     }
 
